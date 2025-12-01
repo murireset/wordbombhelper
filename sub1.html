@@ -2,81 +2,100 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>WordBomb Helper</title>
+<title>WordBomb Helper – Mots à Une Syllabe</title>
 
 <style>
-body{
-  margin:0;
-  background:#0b0f14;
-  color:#e6edf3;
-  font-family:Arial, sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-header{
-  background:#070b10;
-  padding:24px;
-  text-align:center;
-  border-bottom:1px solid #111;
+body {
+  background: #0b0f14;
+  color: #e6edf3;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
-header h1{
-  margin:0;
-  font-size:28px;
-  color:#7bc8ff;
+header {
+  background: #070b10;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #111;
 }
 
-.container{
-  max-width:900px;
-  margin:50px auto;
-  padding:20px;
+header h1 {
+  font-size: 28px;
+  color: #7bc8ff;
 }
 
-.wordCard{
-  background:#0f1923;
-  border:1px solid #1b2a33;
-  border-radius:12px;
-  padding:18px;
-  margin:16px 0;
-  transition:0.2s;
+.container {
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center; /* centre les cartes sur la ligne */
 }
 
-.wordCard:hover{
-  background:#122333;
-  transform:translateY(-2px);
+.wordCard {
+  background: #0f1923;
+  border: 1px solid #1b2a33;
+  border-radius: 12px;
+  padding: 18px;
+  transition: 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
-.wordTitle{
-  font-size:22px;
-  font-weight:bold;
-  color:#7bc8ff;
-  margin-bottom:10px;
+.wordCard:hover {
+  background: #122333;
+  transform: translateY(-3px);
 }
 
-.syllBox{
-  background:#09131d;
-  border:1px solid #1b2a33;
-  border-radius:8px;
-  padding:10px;
-  display:inline-block;
-  min-width:200px;
+.wordTitle {
+  font-size: 22px;
+  font-weight: bold;
+  color: #7bc8ff;
+  margin-bottom: 12px;
 }
 
-.syll{
-  display:block;
-  font-size:16px;
-  padding:4px 0;
-  border-bottom:1px solid #1b2a33;
+.syllBox {
+  background: #09131d;
+  border: 1px solid #1b2a33;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
 }
 
-.syll:last-child{
-  border-bottom:none;
+.syll {
+  background: #0b1a2a;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  border: 1px solid #1b2a33;
+  transition: 0.2s;
 }
 
-footer{
-  margin-top:50px;
-  text-align:center;
-  font-size:14px;
-  opacity:0.5;
+.syll:hover {
+  background: #142c45;
+  transform: scale(1.05);
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.5;
+  padding-bottom: 20px;
 }
 </style>
 </head>
@@ -88,7 +107,7 @@ footer{
 
 <div class="container">
 
-  <div class="wordCard">
+ <div class="wordCard">
     <div class="wordTitle">MDRR</div>
     <div class="syllBox">
       <span class="syll">MDR</span>
@@ -229,6 +248,32 @@ footer{
   </div>
 </div>
 
+
+  <div class="wordCard">
+  <div class="wordTitle">BOSNIE-HERZEGOVINE</div>
+  <div class="syllBox">
+    <span class="syll">ZEG</span>
+    <span class="syll">NIE-</span>
+  </div>
+</div>
+
+  <div class="wordCard">
+  <div class="wordTitle">HYGGE</div>
+  <div class="syllBox">
+    <span class="syll">YGG</span>
+    <span class="syll">HYGG</span>
+  </div>
+</div>
+
+  <div class="wordCard">
+  <div class="wordTitle">MOONWALK</div>
+  <div class="syllBox">
+    <span class="syll">OWN</span>
+    <span class="syll">MOON</span>
+  </div>
+</div>
+
+
 </div>
 
 <footer>
@@ -237,4 +282,3 @@ footer{
 
 </body>
 </html>
-
