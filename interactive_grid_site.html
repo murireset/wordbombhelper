@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Grille 24×24 – Syllabe Logic</title>
+<style>
+body { margin:0; background:#0b0f14; color:#e6edf3; font-family:Arial; }
+header{ padding:16px; background:#070b10; border-bottom:1px solid #111; }
+.container{ display:flex; padding:20px; gap:20px; }
+#grid{ background:#0f1923; padding:10px; border-radius:8px; border:1px solid #1b2a33; min-width:560px; }
+table{ border-collapse:collapse; }
+td{
+  width:40px;
+  height:26px;
+  text-align:center;
+  border:1px solid #1b2a33;
+  background:#0f1a24;
+  font-weight:bold;
+  font-size:13px;
+  color:white;
+}
+td.empty{ color:#1a2f3a; }
+
+.panel{ background:#0f1a24; padding:16px; border-radius:8px; border:1px solid #1b2a33; width:300px; }
+textarea,input{ width:100%; background:#09131d; border:1px solid #1b2a33; color:#e6edf3; padding:8px; border-radius:6px; }
+button{ width:100%; padding:10px; margin-top:8px; background:#13374a; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+button:hover{ background:#18506a; }
+
+#usedBox{
+  margin:20px;
+  background:#0f1a24;
+  padding:16px;
+  border-radius:8px;
+  border:1px solid #1b2a33;
+  font-family:monospace;
+  white-space:pre-wrap;
+  line-height:1.4em;
+}
+.wordTitle{
+  font-weight:bold;
+  color:#7bc8ff;
+}
+.syllLine{
+  margin-left:10px;
+  color:#c0e0ff;
+}
+</style>
+</head>
+<body>
+<header><h1>Grille 24×24 – Placement avec Syllabes</h1></header>
+
+<div class="container">
+  <div id="grid"></div>
+
+  <div class="panel">
+    <h2>Syllabes JSON</h2>
+    <textarea id="syllTxt" rows="12">{
+  "E": 32,
+  "YA": 1,
+  "A": 19,
+  "O": 17,
+  "S": 30,
+  "N": 16,
+  "I": 22,
+  "U": 13,
+  "PH": 1,
+  "Y": 1,
+  "AX": 1,
+  "D": 7,
+  "FA": 1,
+  "C": 10,
+  "NI": 1,
+  "IQU": 1,
+  "M": 8,
+  "F": 6,
+  "HI": 1,
+  "ND": 1,
+  "R": 10,
+  "B": 6,
+  "T": 7,
+  "P": 3,
+  "L": 10,
+  "H": 3,
+  "Q": 2,
+  "X": 4,
+  "J": 1,
+  "G": 3,
+  "Z": 2,
+  "K": 1,
+  "V": 2,
+  "-": 3,
+  "-NU": 1,
+  "MI": 1,
+  "PI": 1,
+  "TR": 1
+}</textarea>
+
+    <h2>Charger FR.txt</h2>
+    <input type="file" id="frInput" accept="text/plain">
+
+    <h2>Nombre de mots</h2>
+    <input id="maxWords" type="number" value="30">
+
+    <button id="btnSearch">🔍 SEARCH</button>
+  </div>
+</div>
+
+<div id="usedBox">Aucun mot placé pour l’instant.</div>
+
+<script>
+let words = [];
+const GRID_SIZE = 24;
+let grid = [];
+let usedData = [];
+
+/* --- INIT --- */
+function initGrid(){
+  grid = Array.from({length:GRID_SIZE},()=>Array(GRID_SIZE).fill(""));
+  usedData = [];
+  updateUsedBox();
+  renderGrid();
+}
+
+/* --- RENDU --- */
+function renderGrid(){
+  let html = "<table>";
+  for(let r=0;r<GRID_SIZE;r++){
+    html += "<tr>";
+    for(let c=0;c<GRID_SIZE;c++){
+      let v = grid[r][c];
+      html += v==="" ? `<td class='empty'>.</td>` : `<td>${v}</td>`;
+    }
+    html += "</tr>";
+  }
+  html += "</table>";
+  document.getElementById("grid").innerHTML = html;
+}
+
+function parseSyllables(){
+  try{ return JSON.parse(document.getElementById("syllTxt").value); }
+  catch(e){ alert("JSON syllabes invalide"); return {}; }
+}
+
+function saveSyllables(obj){
+  document.getElementById("syllTxt").value = JSON.stringify(obj,null,2);
+}
+
+/* --- FIX : segmentation avec STOCK TEMPORAIRE --- */
+function assignSyllables(word, stock){
+  let temp = structuredClone(stock); // copie isolée
+  let i=0, out=[];
+
+  while(i<word.length){
+    let found=false;
+
+    for(let L=3;L>0;L--){
+      if(i+L>word.length) continue;
+
+      let cand = word.substring(i,i+L);
+
+      if(temp[cand] && temp[cand] > 0){
+        out.push(cand);
+        temp[cand]--;      // ← réserve la syllabe !
+        i += L;
+        found = true;
+        break;
+      }
+    }
+
+    if(!found) return null;
+  }
+
+  return out; // segmentation valide
+}
+
+/* consommation réelle */
+function consume(seg, stock){
+  for(let s of seg){ stock[s]--; }
+}
+
+/* liste des mots */
+function updateUsedBox(){
+  if(usedData.length === 0){
+    document.getElementById("usedBox").textContent = "Aucun mot placé pour l’instant.";
+    return;
+  }
+
+  let txt = "";
+  for(let obj of usedData){
+    txt += `\n<span class="wordTitle">${obj.word}</span>\n`;
+    txt += `<span class="syllLine">→ ${obj.seg.join(" | ")}</span>\n`;
+  }
+  document.getElementById("usedBox").innerHTML = txt;
+}
+
+/* --- GRID SYLLABES --- */
+function canPlaceRow(row, seg){
+  if(seg.length > GRID_SIZE) return false;
+  for(let c=0;c<seg.length;c++){
+    if(grid[row][c] !== "") return false;
+  }
+  return true;
+}
+
+function placeRow(row, seg){
+  for(let c=0;c<seg.length;c++){
+    grid[row][c] = seg[c];
+  }
+}
+
+/* --- MAIN --- */
+function placeWords(n){
+  initGrid();
+  let stock = parseSyllables();
+
+  let list = words.filter(w=>w.length<=50).sort((a,b)=>b.length-a.length);
+
+  let row=0, placed=0;
+
+  for(let w of list){
+    if(placed>=n || row>=GRID_SIZE) break;
+
+    // ❌ Vérification si le mot est déjà placé
+    if(usedData.some(u=>u.word === w)) continue;
+
+    let seg = assignSyllables(w, stock);
+    if(!seg) continue;
+
+    if(canPlaceRow(row, seg)){
+      placeRow(row, seg);
+      consume(seg, stock);
+      saveSyllables(stock);
+
+      usedData.push({word: w, seg: seg});
+      updateUsedBox();
+
+      row++;
+      placed++;
+    }
+  }
+
+  renderGrid();
+  alert(placed + " mots placés !");
+}
+
+/* input fichier */
+document.getElementById("frInput").addEventListener("change", async e=>{
+  let file=e.target.files[0]; if(!file) return;
+  let txt = await file.text();
+  words = txt.split(/\r?\n/).map(w=>w.trim().toUpperCase()).filter(w=>w.length);
+  alert("FR.txt chargé : "+words.length+" mots");
+});
+
+document.getElementById("btnSearch").addEventListener("click", ()=>{
+  if(!words.length){ alert("Charge FR.txt"); return; }
+  let n = parseInt(document.getElementById("maxWords").value);
+  placeWords(n);
+});
+
+initGrid();
+</script>
+</body>
+</html>
