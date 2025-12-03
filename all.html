@@ -2,70 +2,186 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Générateur de mots avec syllabes - Dark Theme</title>
+<title>WordBomb Helper – Générateur de mots</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #121212;
-    color: #E0E0E0;
-    margin: 20px;
-  }
-  input, button, textarea {
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-    font-size: 14px;
-    background: #1E1E1E;
-    color: #E0E0E0;
-  }
-  input[type="file"] {
-    padding: 3px;
-  }
-  textarea {
-    width: 100%;
-    font-family: monospace;
-    height: 200px;
-    background: #1E1E1E;
-    color: #E0E0E0;
-  }
-  button {
-    background-color: #1E88E5;
-    color: white;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #1565C0;
-  }
-  ul {
-    margin-top: 15px;
-    padding-left: 20px;
-  }
-  li {
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .valider {
-    cursor: pointer;
-    color: #4CAF50;
-    font-weight: bold;
-    margin-left: 10px;
-  }
-  .valider:hover {
-    color: #81C784;
-  }
-  h2 {
-    color: #90CAF9;
-  }
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #070b10;
+  border-right: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.sidebar h2 {
+  color: #7bc8ff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #e6edf3;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  background: #13374a;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
+}
+
+.main {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background: #070b10;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #111;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  font-size: 28px;
+  color: #7bc8ff;
+  margin: 0;
+}
+
+.container {
+  max-width: 900px;
+  width: 100%;
+  padding: 20px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+
+input, button, textarea {
+  width: 100%;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 5px;
+  border: none;
+  font-size: 14px;
+  background: #1E1E1E;
+  color: #E0E0E0;
+}
+
+input[type="file"] {
+  padding: 3px;
+}
+
+textarea {
+  font-family: monospace;
+  height: 200px;
+}
+
+button {
+  background-color: #18506a;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  border-radius: 12px;
+  padding: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #1e6f8e;
+}
+
+h2, h3 {
+  color: #7bc8ff;
+  margin-top: 20px;
+  text-align: center;
+}
+
+ul {
+  margin-top: 15px;
+  padding-left: 20px;
+  list-style: none;
+}
+
+li {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #13374a;
+  padding: 8px 12px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #0005;
+}
+
+.valider {
+  cursor: pointer;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.valider:hover {
+  color: #81C784;
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.5;
+  padding-bottom: 20px;
+}
 </style>
 </head>
 <body>
-<h2>Générateur de mots avec syllabes</h2>
 
-<label>JSON des syllabes :</label><br>
-<textarea id="syllabesJson">
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
+
+<div class="main">
+  <header>
+    <h1>Générateur de mots avec syllabes</h1>
+  </header>
+
+  <div class="container">
+    <label>JSON des syllabes :</label>
+    <textarea id="syllabesJson">
 {
   "E": 32,
   "YA": 1,
@@ -106,25 +222,30 @@
   "PI": 1,
   "TR": 1
 }
-</textarea>
-<br>
+    </textarea>
 
-<label>Syllabe obligatoire :</label>
-<input type="text" id="syllabe" maxlength="4" placeholder="Ex: T">
-<br>
-<label>Taille max du mot :</label>
-<input type="number" id="tailleMax" min="1" placeholder="Ex: 24">
-<br>
-<label>Position de la syllabe :</label>
-<input type="number" id="position" min="1" placeholder="Ex: 4">
-<br>
-<label>Fichier de mots (.txt) :</label>
-<input type="file" id="fichier">
-<br>
-<button onclick="genererMots()">Générer</button>
+    <label>Syllabe obligatoire :</label>
+    <input type="text" id="syllabe" maxlength="4" placeholder="Ex: T">
 
-<h3>Résultats :</h3>
-<ul id="resultats"></ul>
+    <label>Taille max du mot :</label>
+    <input type="number" id="tailleMax" min="1" placeholder="Ex: 24">
+
+    <label>Position de la syllabe :</label>
+    <input type="number" id="position" min="1" placeholder="Ex: 4">
+
+    <label>Fichier de mots (.txt) :</label>
+    <input type="file" id="fichier">
+
+    <button onclick="genererMots()">Générer</button>
+
+    <h3>Résultats :</h3>
+    <ul id="resultats"></ul>
+  </div>
+
+  <footer>
+    BILLIE LA REINE DE CE MONDE.
+  </footer>
+</div>
 
 <script>
 let motsResultats = [];
@@ -144,7 +265,6 @@ function genererMots() {
         return;
     }
 
-    // Trier les syllabes par longueur décroissante
     let syllabes = Object.keys(syllabesJson).sort((a,b)=>b.length-a.length);
 
     const syllabeObligatoire = document.getElementById('syllabe').value.toUpperCase();
@@ -166,20 +286,18 @@ function genererMots() {
             let reste = mot;
             let utilisé = [];
             let valide = true;
-            let stockTemp = {...syllabesJson}; // copie du stock temporaire
+            let stockTemp = {...syllabesJson};
 
             while (reste.length > 0) {
                 let trouvé = false;
                 for (let s of syllabes) {
                     if (reste.startsWith(s)) {
-                        // Syllabe obligatoire à la position exacte n'est pas consommée
                         if (!(reste.substr(0, syllabeObligatoire.length) === syllabeObligatoire && utilisé.join('').length === position)) {
-                            // Consommer la syllabe si disponible dans le stock, sauf les tirets qui peuvent toujours être utilisés
                             if (s === '-' || (stockTemp[s] && stockTemp[s] > 0)) {
                                 utilisé.push(s);
                                 if (s !== '-') stockTemp[s]--;
                             } else {
-                                continue; // stock épuisé, essayer autre syllabe
+                                continue;
                             }
                         }
                         reste = reste.slice(s.length);
@@ -198,9 +316,7 @@ function genererMots() {
             }
         }
 
-        // Trier par longueur décroissante
         motsResultats.sort((a,b)=>b.mot.length - a.mot.length);
-
         afficherResultats();
     }
 
@@ -237,7 +353,7 @@ function validerMot(index) {
     }
 
     motInfo.syllabes.forEach(s => {
-        if (s !== '-' && json[s]) { // ne retire pas les tirets
+        if (s !== '-' && json[s]) {
             json[s]--;
             if (json[s] <= 0) delete json[s];
         }
@@ -247,5 +363,6 @@ function validerMot(index) {
     alert("Syllabes retirées du JSON !");
 }
 </script>
+
 </body>
 </html>
