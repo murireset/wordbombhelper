@@ -2,250 +2,152 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>Générateur de mots avec syllabes - Dark Theme</title>
+<title>WordBomb Helper – Dictionnaires</title>
 <style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #121212;
-    color: #E0E0E0;
-    margin: 20px;
-  }
-  input, button, textarea {
-    margin: 5px 0;
-    padding: 8px;
-    border-radius: 5px;
-    border: none;
-    font-size: 14px;
-    background: #1E1E1E;
-    color: #E0E0E0;
-  }
-  input[type="file"] {
-    padding: 3px;
-  }
-  textarea {
-    width: 100%;
-    font-family: monospace;
-    height: 200px;
-    background: #1E1E1E;
-    color: #E0E0E0;
-  }
-  button {
-    background-color: #1E88E5;
-    color: white;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #1565C0;
-  }
-  ul {
-    margin-top: 15px;
-    padding-left: 20px;
-  }
-  li {
-    margin-bottom: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .valider {
-    cursor: pointer;
-    color: #4CAF50;
-    font-weight: bold;
-    margin-left: 10px;
-  }
-  .valider:hover {
-    color: #81C784;
-  }
-  h2 {
-    color: #90CAF9;
-  }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #070b10;
+  border-right: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.sidebar h2 {
+  color: #7bc8ff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #e6edf3;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  background: #13374a;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
+}
+
+.main {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background: #070b10;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #111;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  color: #7bc8ff;
+}
+
+.dict-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dict-box {
+  background: #13374a;
+  padding: 20px;
+  border-radius: 12px;
+  width: 250px;
+  text-align: center;
+}
+
+.dict-box h2 {
+  color: #7bc8ff;
+  margin-bottom: 15px;
+}
+
+.dict-box a {
+  display: inline-block;
+  padding: 10px 15px;
+  background: #0b0f14;
+  color: #e6edf3;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.dict-box a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
+}
+
+footer {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.5;
+  margin-top: 40px;
+}
 </style>
 </head>
 <body>
-<h2>Générateur de mots avec syllabes</h2>
 
-<label>JSON des syllabes :</label><br>
-<textarea id="syllabesJson">
-{
-  "E": 32,
-  "YA": 1,
-  "A": 19,
-  "O": 17,
-  "S": 30,
-  "N": 16,
-  "I": 22,
-  "U": 13,
-  "PH": 1,
-  "Y": 1,
-  "AX": 1,
-  "D": 7,
-  "FA": 1,
-  "C": 10,
-  "NI": 1,
-  "IQU": 1,
-  "M": 8,
-  "F": 6,
-  "HI": 1,
-  "ND": 1,
-  "R": 10,
-  "B": 6,
-  "T": 7,
-  "P": 3,
-  "L": 10,
-  "H": 3,
-  "Q": 2,
-  "X": 4,
-  "J": 1,
-  "G": 3,
-  "Z": 2,
-  "K": 1,
-  "V": 2,
-  "-": 3,
-  "-NU": 1,
-  "MI": 1,
-  "PI": 1,
-  "TR": 1
-}
-</textarea>
-<br>
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
 
-<label>Syllabe obligatoire :</label>
-<input type="text" id="syllabe" maxlength="4" placeholder="Ex: T">
-<br>
-<label>Taille max du mot :</label>
-<input type="number" id="tailleMax" min="1" placeholder="Ex: 24">
-<br>
-<label>Position de la syllabe :</label>
-<input type="number" id="position" min="1" placeholder="Ex: 4">
-<br>
-<label>Fichier de mots (.txt) :</label>
-<input type="file" id="fichier">
-<br>
-<button onclick="genererMots()">Générer</button>
+<div class="main">
+  <header>
+    <h1>BILLIE EILISH <3</h1>
+  </header>
 
-<h3>Résultats :</h3>
-<ul id="resultats"></ul>
+  <div class="dict-container">
+    <div class="dict-box">
+      <h2>FR</h2>
+      <a href="FR.txt" download>Télécharger</a>
+    </div>
+    <div class="dict-box">
+      <h2>MIXTE</h2>
+      <a href="MIXTE.txt" download>Télécharger</a>
+    </div>
+    <div class="dict-box">
+      <h2>EN</h2>
+      <a href="EN.txt" download>Télécharger</a>
+    </div>
+  </div>
 
-<script>
-let motsResultats = [];
+  <footer>
+    BILLIE JE T'AIME.
+  </footer>
+</div>
 
-function genererMots() {
-    const fileInput = document.getElementById('fichier');
-    if (!fileInput.files[0]) {
-        alert("Veuillez uploader un fichier de mots.");
-        return;
-    }
-
-    let syllabesJson;
-    try {
-        syllabesJson = JSON.parse(document.getElementById('syllabesJson').value);
-    } catch(e) {
-        alert("JSON invalide !");
-        return;
-    }
-
-    // Trier les syllabes par longueur décroissante
-    let syllabes = Object.keys(syllabesJson).sort((a,b)=>b.length-a.length);
-
-    const syllabeObligatoire = document.getElementById('syllabe').value.toUpperCase();
-    const tailleMax = parseInt(document.getElementById('tailleMax').value);
-    const position = parseInt(document.getElementById('position').value) - 1;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const contenu = e.target.result;
-        const motsFichier = contenu.split(/\r?\n/).map(w => w.trim().toUpperCase()).filter(w => w);
-
-        motsResultats = [];
-
-        for (let mot of motsFichier) {
-            if (mot.length > tailleMax) continue;
-            if (position + syllabeObligatoire.length > mot.length) continue;
-            if (mot.substr(position, syllabeObligatoire.length) !== syllabeObligatoire) continue;
-
-            let reste = mot;
-            let utilisé = [];
-            let valide = true;
-            let stockTemp = {...syllabesJson}; // copie du stock temporaire
-
-            while (reste.length > 0) {
-                let trouvé = false;
-                for (let s of syllabes) {
-                    if (reste.startsWith(s)) {
-                        // Syllabe obligatoire à la position exacte n'est pas consommée
-                        if (!(reste.substr(0, syllabeObligatoire.length) === syllabeObligatoire && utilisé.join('').length === position)) {
-                            // Consommer la syllabe si disponible dans le stock, sauf les tirets qui peuvent toujours être utilisés
-                            if (s === '-' || (stockTemp[s] && stockTemp[s] > 0)) {
-                                utilisé.push(s);
-                                if (s !== '-') stockTemp[s]--;
-                            } else {
-                                continue; // stock épuisé, essayer autre syllabe
-                            }
-                        }
-                        reste = reste.slice(s.length);
-                        trouvé = true;
-                        break;
-                    }
-                }
-                if (!trouvé) {
-                    valide = false;
-                    break;
-                }
-            }
-
-            if (valide) {
-                motsResultats.push({mot: mot, syllabes: utilisé});
-            }
-        }
-
-        // Trier par longueur décroissante
-        motsResultats.sort((a,b)=>b.mot.length - a.mot.length);
-
-        afficherResultats();
-    }
-
-    reader.readAsText(fileInput.files[0]);
-}
-
-function afficherResultats() {
-    const ul = document.getElementById('resultats');
-    ul.innerHTML = "";
-
-    if(motsResultats.length === 0){
-        ul.innerHTML = "<li>Aucun mot trouvé</li>";
-    } else {
-        for (let i = 0; i < motsResultats.length; i++) {
-            const r = motsResultats[i];
-            const li = document.createElement('li');
-            li.innerHTML = `<span>${r.mot} => [${r.syllabes.join(', ')}]</span> <span class="valider" onclick='validerMot(${i})'>✔</span>`;
-            ul.appendChild(li);
-        }
-    }
-}
-
-function validerMot(index) {
-    const motInfo = motsResultats[index];
-    if (!motInfo) return;
-
-    let jsonTextarea = document.getElementById('syllabesJson');
-    let json;
-    try {
-        json = JSON.parse(jsonTextarea.value);
-    } catch(e) {
-        alert("JSON invalide !");
-        return;
-    }
-
-    motInfo.syllabes.forEach(s => {
-        if (s !== '-' && json[s]) { // ne retire pas les tirets
-            json[s]--;
-            if (json[s] <= 0) delete json[s];
-        }
-    });
-
-    jsonTextarea.value = JSON.stringify(json, null, 2);
-    alert("Syllabes retirées du JSON !");
-}
-</script>
 </body>
 </html>
