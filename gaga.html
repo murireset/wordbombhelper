@@ -4,158 +4,26 @@
 <meta charset="UTF-8">
 <title>WordBomb Helper – Dictionnaire</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #0b0f14;
-  color: #e6edf3;
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 220px;
-  background: #070b10;
-  border-right: 1px solid #111;
-  display: flex;
-  flex-direction: column;
-  padding-top: 20px;
-}
-
-.sidebar h2 {
-  color: #7bc8ff;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.sidebar a {
-  text-decoration: none;
-  color: #e6edf3;
-  padding: 12px 20px;
-  margin: 5px;
-  border-radius: 10px;
-  transition: 0.2s;
-  background: #13374a;
-  text-align: center;
-  font-weight: bold;
-}
-
-.sidebar a:hover {
-  background: #18506a;
-  transform: translateY(-2px);
-}
-
-/* Main content */
-.main {
-  flex: 1;
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-header {
-  background: #070b10;
-  padding: 20px;
-  text-align: center;
-  border-bottom: 1px solid #111;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-header h1 {
-  margin: 0;
-  color: #7bc8ff;
-}
-
-/* Search box */
-.search-box {
-  background: #13374a;
-  padding: 25px;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 550px;
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 30px;
-  box-shadow: 0 0 15px #000a;
-}
-
-.search-box label {
-  margin: 5px 0;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-.search-box input, .search-box select {
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
-}
-
-.search-box input:focus, .search-box select:focus {
-  outline: none;
-  box-shadow: 0 0 5px #7bc8ff;
-}
-
-/* Word section */
-.word-section {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-
-.word-box {
-  background: #13374a;
-  padding: 20px;
-  border-radius: 12px;
-  margin: 10px;
-  min-width: 200px;
-  max-height: 300px;
-  overflow-y: auto;
-  box-shadow: 0 0 10px #0008;
-}
-
-.word-box h3 {
-  color: #7bc8ff;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.word-box ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.word-box li {
-  margin: 5px 0;
-  padding: 5px 8px;
-  border-radius: 6px;
-  transition: 0.2s;
-}
-
-.word-box li:hover {
-  background-color: #18506a;
-  cursor: default;
-}
-
-/* Highlight syllable */
-.highlight {
-  color: #ffd700;
-  font-weight: bold;
-}
-
-footer {
-  text-align: center;
-  font-size: 14px;
-  opacity: 0.5;
-  margin-top: 40px;
-}
+body { margin:0; font-family:Arial,sans-serif; background:#0b0f14; color:#e6edf3; display:flex; min-height:100vh; }
+.sidebar { width:220px; background:#070b10; border-right:1px solid #111; display:flex; flex-direction:column; padding-top:20px; }
+.sidebar h2 { color:#7bc8ff; text-align:center; margin-bottom:20px; }
+.sidebar a { text-decoration:none; color:#e6edf3; padding:12px 20px; margin:5px; border-radius:10px; transition:0.2s; background:#13374a; text-align:center; font-weight:bold; }
+.sidebar a:hover { background:#18506a; transform:translateY(-2px); }
+.main { flex:1; padding:40px; display:flex; flex-direction:column; align-items:center; }
+header { background:#070b10; padding:20px; text-align:center; border-bottom:1px solid #111; width:100%; margin-bottom:20px; }
+header h1 { margin:0; color:#7bc8ff; }
+.search-box { background:#13374a; padding:25px; border-radius:12px; width:100%; max-width:550px; display:flex; flex-direction:column; margin-bottom:30px; box-shadow:0 0 15px #000a; }
+.search-box label { margin:5px 0; font-weight:bold; font-size:14px; }
+.search-box input, .search-box select { padding:10px; margin-bottom:15px; border-radius:8px; border:none; font-size:16px; }
+.search-box input:focus, .search-box select:focus { outline:none; box-shadow:0 0 5px #7bc8ff; }
+.word-section { width:100%; display:flex; justify-content:space-around; flex-wrap:wrap; }
+.word-box { background:#13374a; padding:20px; border-radius:12px; margin:10px; min-width:200px; max-height:300px; overflow-y:auto; box-shadow:0 0 10px #0008; }
+.word-box h3 { color:#7bc8ff; margin-bottom:15px; text-align:center; }
+.word-box ul { list-style:none; padding:0; margin:0; }
+.word-box li { margin:5px 0; padding:5px 8px; border-radius:6px; transition:0.2s; }
+.word-box li:hover { background-color:#18506a; cursor:default; }
+.highlight { color:#ffd700; font-weight:bold; }
+footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
 </style>
 </head>
 <body>
@@ -181,9 +49,9 @@ footer {
 
     <label for="dico">Dictionnaire :</label>
     <select id="dico">
-      <option value="FR">FR</option>
-      <option value="MIXTE">MIXTE</option>
-      <option value="EN">EN</option>
+      <option value="FR.txt">FR</option>
+      <option value="MIXTE.txt">MIXTE</option>
+      <option value="EN.txt">EN</option>
     </select>
 
     <label for="contain">Contient :</label>
@@ -214,31 +82,34 @@ footer {
 </div>
 
 <script>
-// Dictionnaires intégrés directement pour éviter CORS
-const DICTIONNAIRES = {
-  FR: ["DE", "DEMIE", "DENTS", "DEUX", "DEMAIN", "DEVOIR", "DELICE", "DEVINETTE", "DÉRIVE"],
-  MIXTE: ["DE", "DEMO", "DEVICE", "DEFINE", "DETECT", "DELIVER", "DEMOCRACY", "DÉJÀ"],
-  EN: ["DE", "DEAL", "DEEP", "DEFINE", "DETECT", "DEVELOP", "DELIVER", "DESIGN"]
-};
+let dictionaryCache = {file: '', words: []};
 
-// Filtrer les mots selon syllabe, contient, commence par
+// Charger le dictionnaire depuis le site
+async function loadDictionary(file) {
+  if (dictionaryCache.file === file) return dictionaryCache.words;
+  const response = await fetch(file);
+  const text = await response.text();
+  const words = text.split(/\r?\n/).filter(w => w.trim().length).map(w => w.toUpperCase());
+  dictionaryCache = {file, words};
+  return words;
+}
+
+// Filtrer les mots
 function filterWords(words, syllabe, contain, start) {
   let result = words.filter(w => w.includes(syllabe));
 
   if (contain) {
-    const filtered = result.filter(w => w.includes(contain));
+    const filtered = result.filter(w => w.includes(contain.toUpperCase()));
     if (filtered.length) result = filtered;
   }
 
   if (start) {
-    const filteredStart = result.filter(w => w.startsWith(start));
+    const filteredStart = result.filter(w => w.startsWith(start.toUpperCase()));
     if (filteredStart.length) result = filteredStart;
   }
 
-  // Si aucun mot ne correspond aux lettres, renvoyer quand même mots contenant la syllabe
-  if (result.length === 0) {
-    result = words.filter(w => w.includes(syllabe));
-  }
+  // Si aucun mot ne correspond, on retourne quand même mots contenant la syllabe
+  if (result.length === 0) result = words.filter(w => w.includes(syllabe));
 
   return result;
 }
@@ -249,7 +120,7 @@ function getRandomWords(words, count) {
   return shuffled.slice(0, count);
 }
 
-// Affichage avec surlignage de la syllabe
+// Affichage avec surlignage
 function displayWords(id, words, syllabe) {
   const ul = document.getElementById(id);
   ul.innerHTML = '';
@@ -261,10 +132,10 @@ function displayWords(id, words, syllabe) {
   });
 }
 
-// Générer mots automatiquement
-function generateWords() {
+// Générer automatiquement
+async function generateWords() {
   const syllabe = document.getElementById('syllabe').value.toUpperCase();
-  const dico = document.getElementById('dico').value;
+  const file = document.getElementById('dico').value;
   const contain = document.getElementById('contain').value.toUpperCase();
   const start = document.getElementById('start').value.toUpperCase();
 
@@ -275,7 +146,7 @@ function generateWords() {
     return;
   }
 
-  const words = DICTIONNAIRES[dico].map(w => w.toUpperCase());
+  const words = await loadDictionary(file);
   const filtered = filterWords(words, syllabe, contain, start);
 
   const shortest = filtered.slice().sort((a,b)=>a.length-b.length).slice(0,5);
@@ -287,7 +158,7 @@ function generateWords() {
   displayWords('random', random, syllabe);
 }
 
-// Événements automatiques
+// Détecter la saisie automatique
 ['syllabe','contain','start'].forEach(id => {
   document.getElementById(id).addEventListener('input', generateWords);
 });
