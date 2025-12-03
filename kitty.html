@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>WordBomb Helper – Upload TXT</title>
+<style>
+body { margin:0; font-family:Arial,sans-serif; background:#0b0f14; color:#e6edf3; display:flex; min-height:100vh; }
+.sidebar { width:220px; background:#070b10; border-right:1px solid #111; display:flex; flex-direction:column; padding-top:20px; }
+.sidebar h2 { color:#7bc8ff; text-align:center; margin-bottom:20px; }
+.sidebar a { text-decoration:none; color:#e6edf3; padding:12px 20px; margin:5px; border-radius:10px; transition:0.2s; background:#13374a; text-align:center; font-weight:bold; }
+.sidebar a:hover { background:#18506a; transform:translateY(-2px); }
+.main { flex:1; padding:40px; display:flex; flex-direction:column; align-items:center; }
+header { background:#070b10; padding:20px; text-align:center; border-bottom:1px solid #111; width:100%; margin-bottom:20px; }
+header h1 { margin:0; color:#7bc8ff; }
+.upload-section { background:#13374a; padding:25px; border-radius:12px; width:100%; max-width:600px; display:flex; flex-direction:column; align-items:center; margin-bottom:30px; box-shadow:0 0 15px #000a; }
+.upload-section input[type="file"] { margin-bottom:15px; }
+.upload-section input[type="text"] { padding:10px; border-radius:8px; border:none; font-size:16px; width:80%; margin-bottom:15px; }
+.upload-section button { padding:10px 20px; border:none; border-radius:8px; background:#7bc8ff; color:#0b0f14; font-weight:bold; margin:5px; cursor:pointer; transition:0.2s; }
+.upload-section button:hover { background:#5aa6d1; }
+.word-list { background:#13374a; padding:20px; border-radius:12px; width:100%; max-width:600px; box-shadow:0 0 10px #0008; margin-bottom:20px; }
+.word-list h3 { color:#7bc8ff; text-align:center; margin-bottom:15px; }
+.word-list ul { list-style:none; padding:0; margin:0; }
+.word-list li { margin:5px 0; padding:5px 8px; border-radius:6px; transition:0.2s; cursor:pointer; }
+.word-list li:hover { background-color:#18506a; }
+.highlight { color:#ffd700; font-weight:bold; }
+footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
+
+<div class="main">
+<header>
+  <h1>WordBomb Helper – Upload TXT</h1>
+</header>
+
+<div class="upload-section">
+  <input type="file" id="fileInput" accept=".txt">
+  <input type="text" id="syllabe" placeholder="Tape la syllabe à rechercher">
+  <button id="copyBtn">Copier mots restants</button>
+</div>
+
+<div class="word-list">
+  <h3>Mots trouvés</h3>
+  <ul id="wordResults"></ul>
+</div>
+
+<footer>BILLIE JE T'AIME.</footer>
+</div>
+
+<script>
+let wordsMemory = []; // mots chargés depuis le txt
+let displayedWords = []; // mots actuellement affichés
+
+// Lire le fichier txt
+document.getElementById('fileInput').addEventListener('change', function(e){
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt){
+    const text = evt.target.result;
+    wordsMemory = text.split(/\r?\n/).filter(w=>w.trim().length); // stocke tous les mots
+    displayedWords = [...wordsMemory];
+    updateDisplay();
+  };
+  reader.readAsText(file);
+});
+
+// Mettre à jour l'affichage selon la syllabe
+document.getElementById('syllabe').addEventListener('input', function(){
+  updateDisplay();
+});
+
+function updateDisplay(){
+  const syllabe = document.getElementById('syllabe').value.toUpperCase();
+  let filtered = displayedWords.filter(w=>w.toUpperCase().includes(syllabe));
+  filtered = filtered.slice(0,5); // 5 mots max
+  const ul = document.getElementById('wordResults');
+  ul.innerHTML = '';
+  filtered.forEach(word=>{
+    const li = document.createElement('li');
+    li.innerHTML = word.replace(new RegExp(`(${syllabe})`,'gi'), '<span class="highlight">$1</span>');
+    li.addEventListener('click', ()=>{
+      // supprimer le mot du tableau des mots restants
+      displayedWords = displayedWords.filter(w=>w!==word);
+      updateDisplay();
+    });
+    ul.appendChild(li);
+  });
+}
+
+// Copier les mots restants
+document.getElementById('copyBtn').addEventListener('click', function(){
+  const text = displayedWords.join('\n');
+  navigator.clipboard.writeText(text).then(()=>{
+    alert('Mots restants copiés dans le presse-papier !');
+  });
+});
+</script>
+
+</body>
+</html>
