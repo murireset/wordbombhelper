@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>WordBomb Helper – AA</title>
+<style>
+body{
+  margin:0;
+  background:#0b0f14;
+  color:#e6edf3;
+  font-family:Arial, sans-serif;
+}
+
+header{
+  background:#070b10;
+  padding:24px;
+  text-align:center;
+  border-bottom:1px solid #111;
+}
+header h1{
+  margin:0;
+  font-size:28px;
+  color:#7bc8ff;
+}
+
+.container{
+  max-width:900px;
+  margin:50px auto;
+  padding:20px;
+}
+
+/* --- BLOCS BEAUX ET UNIFORMES --- */
+.section{
+  display:flex;
+  gap:30px;
+  margin-bottom:30px;
+}
+
+.box{
+  flex:1;
+  background:#13374a;
+  padding:0;
+  border-radius:20px;
+  overflow:hidden;   /* ← corrige les trous */
+  box-shadow:0 0 15px #0005;
+}
+
+.box h2{
+  margin:0;
+  padding:14px;
+  background:#18506a;
+  color:#7bc8ff;
+  text-align:center;
+  border-bottom:1px solid #0b0f14;
+}
+
+textarea{
+  width:100%;
+  height:260px;
+  border:none;
+  padding:15px;
+  background:#0b0f14;
+  color:white;
+  font-size:15px;
+  resize:none;
+  outline:none;
+}
+
+/* --- BOUTONS --- */
+button{
+  display:block;
+  width:100%;
+  max-width:300px;
+  margin:20px auto;
+  padding:14px;
+  background:#18506a;
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.2s;
+  box-shadow:0 0 10px #0005;
+}
+button:hover{
+  background:#1e6f8e;
+  transform:translateY(-2px);
+}
+
+#output{
+  width:100%;
+  height:180px;
+  background:#0b0f14;
+  color:#7bc8ff;
+  border:none;
+  border-radius:12px;
+  padding:15px;
+  resize:none;
+  font-size:15px;
+  box-shadow:0 0 10px #0005;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CALCUL SYLLABES → JSON</h1>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <div class="box">
+      <h2>PLACÉES</h2>
+      <textarea id="placees"></textarea>
+    </div>
+
+    <div class="box">
+      <h2>NON PLACÉES</h2>
+      <textarea id="nonplacees"></textarea>
+    </div>
+  </div>
+
+  <button onclick="generateJSON()">GÉNÉRER JSON</button>
+
+  <h2 style="text-align:center; color:#7bc8ff;">RESULTAT JSON</h2>
+  <textarea id="output" readonly></textarea>
+  <button onclick="copyJSON()">COPIER</button>
+
+</div>
+
+<script>
+function parseInput(text){
+  const lines = text.split(/\n+/).filter(l => l.trim() !== "");
+  let result = {};
+
+  lines.forEach(line => {
+    const match = line.match(/^(.*)\((\d+)\)/);
+    if(match){
+      const key = match[1].trim();
+      const num = parseInt(match[2]);
+      result[key] = (result[key] || 0) + num;
+    }
+  });
+  return result;
+}
+
+function generateJSON(){
+  const p = parseInput(document.getElementById("placees").value);
+  const np = parseInput(document.getElementById("nonplacees").value);
+
+  const final = {};
+
+  for(const k in p){ final[k] = (final[k] || 0) + p[k]; }
+  for(const k in np){ final[k] = (final[k] || 0) + np[k]; }
+
+  document.getElementById("output").value =
+    JSON.stringify(final, null, 2);
+}
+
+function copyJSON(){
+  const out = document.getElementById("output");
+  out.select();
+  document.execCommand("copy");
+}
+</script>
+
+</body>
+</html>
