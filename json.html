@@ -2,132 +2,206 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>WordBomb Helper – AA</title>
+<title>WordBomb Helper – CALCUL SYLLABES</title>
 <style>
-body{
-  margin:0;
-  background:#0b0f14;
-  color:#e6edf3;
-  font-family:Arial, sans-serif;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-header{
-  background:#070b10;
-  padding:24px;
-  text-align:center;
-  border-bottom:1px solid #111;
-}
-header h1{
-  margin:0;
-  font-size:28px;
-  color:#7bc8ff;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+  display: flex;
+  min-height: 100vh;
 }
 
-.container{
-  max-width:900px;
-  margin:50px auto;
-  padding:20px;
+.sidebar {
+  width: 220px;
+  background: #070b10;
+  border-right: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
 }
 
-/* --- BLOCS BEAUX ET UNIFORMES --- */
-.section{
-  display:flex;
-  gap:30px;
-  margin-bottom:30px;
+.sidebar h2 {
+  color: #7bc8ff;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-.box{
-  flex:1;
-  background:#13374a;
-  padding:0;
-  border-radius:20px;
-  overflow:hidden;   /* ← corrige les trous */
-  box-shadow:0 0 15px #0005;
+.sidebar a {
+  text-decoration: none;
+  color: #e6edf3;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  background: #13374a;
+  text-align: center;
+  font-weight: bold;
 }
 
-.box h2{
-  margin:0;
-  padding:14px;
-  background:#18506a;
-  color:#7bc8ff;
-  text-align:center;
-  border-bottom:1px solid #0b0f14;
+.sidebar a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
 }
 
-textarea{
-  width:100%;
-  height:260px;
-  border:none;
-  padding:15px;
-  background:#0b0f14;
-  color:white;
-  font-size:15px;
-  resize:none;
-  outline:none;
+.main {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* --- BOUTONS --- */
-button{
-  display:block;
-  width:100%;
-  max-width:300px;
-  margin:20px auto;
-  padding:14px;
-  background:#18506a;
-  color:white;
-  border:none;
-  border-radius:12px;
-  font-size:18px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.2s;
-  box-shadow:0 0 10px #0005;
-}
-button:hover{
-  background:#1e6f8e;
-  transform:translateY(-2px);
+header {
+  background: #070b10;
+  padding: 24px;
+  text-align: center;
+  border-bottom: 1px solid #111;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-#output{
-  width:100%;
-  height:180px;
-  background:#0b0f14;
-  color:#7bc8ff;
-  border:none;
-  border-radius:12px;
-  padding:15px;
-  resize:none;
-  font-size:15px;
-  box-shadow:0 0 10px #0005;
+header h1 {
+  font-size: 28px;
+  color: #7bc8ff;
+}
+
+/* Container et sections */
+.container {
+  max-width: 900px;
+  width: 100%;
+  padding: 20px;
+}
+
+.section {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.box {
+  flex: 1;
+  background: #13374a;
+  padding: 0;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 0 15px #0005;
+}
+
+.box h2 {
+  margin: 0;
+  padding: 14px;
+  background: #18506a;
+  color: #7bc8ff;
+  text-align: center;
+  border-bottom: 1px solid #0b0f14;
+}
+
+textarea {
+  width: 100%;
+  height: 260px;
+  border: none;
+  padding: 15px;
+  background: #0b0f14;
+  color: white;
+  font-size: 15px;
+  resize: none;
+  outline: none;
+  box-shadow: inset 0 0 5px #0005;
+}
+
+button {
+  display: block;
+  width: 100%;
+  max-width: 300px;
+  margin: 20px auto;
+  padding: 14px;
+  background: #18506a;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 0 10px #0005;
+}
+
+button:hover {
+  background: #1e6f8e;
+  transform: translateY(-2px);
+}
+
+#output {
+  width: 100%;
+  height: 180px;
+  background: #0b0f14;
+  color: #7bc8ff;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  resize: none;
+  font-size: 15px;
+  box-shadow: 0 0 10px #0005;
+}
+
+footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.5;
+  padding-bottom: 20px;
 }
 </style>
 </head>
 <body>
 
-<header>
-  <h1>CALCUL SYLLABES → JSON</h1>
-</header>
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="aa.html">AA</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
 
-<div class="container">
+<div class="main">
+  <header>
+    <h1>CALCUL SYLLABES → JSON</h1>
+  </header>
 
-  <div class="section">
-    <div class="box">
-      <h2>PLACÉES</h2>
-      <textarea id="placees"></textarea>
+  <div class="container">
+    <div class="section">
+      <div class="box">
+        <h2>PLACÉES</h2>
+        <textarea id="placees"></textarea>
+      </div>
+
+      <div class="box">
+        <h2>NON PLACÉES</h2>
+        <textarea id="nonplacees"></textarea>
+      </div>
     </div>
 
-    <div class="box">
-      <h2>NON PLACÉES</h2>
-      <textarea id="nonplacees"></textarea>
-    </div>
+    <button onclick="generateJSON()">GÉNÉRER JSON</button>
+
+    <h2 style="text-align:center; color:#7bc8ff;">RESULTAT JSON</h2>
+    <textarea id="output" readonly></textarea>
+    <button onclick="copyJSON()">COPIER</button>
   </div>
 
-  <button onclick="generateJSON()">GÉNÉRER JSON</button>
-
-  <h2 style="text-align:center; color:#7bc8ff;">RESULTAT JSON</h2>
-  <textarea id="output" readonly></textarea>
-  <button onclick="copyJSON()">COPIER</button>
-
+  <footer>
+    BILLIE LA REINE DE CE MONDE.
+  </footer>
 </div>
 
 <script>
