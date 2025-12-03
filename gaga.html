@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>WordBomb Helper – Dictionnaire</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0b0f14;
+  color: #e6edf3;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #070b10;
+  border-right: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.sidebar h2 {
+  color: #7bc8ff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #e6edf3;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  background: #13374a;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
+}
+
+/* Partie principale */
+.main {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background: #070b10;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #111;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+header h1 {
+  margin: 0;
+  color: #7bc8ff;
+}
+
+/* Boîte de recherche */
+.search-box {
+  background: #13374a;
+  padding: 20px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.search-box label {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.search-box input, .search-box select {
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+/* Résultats */
+.word-section {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.word-box {
+  background: #13374a;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 10px;
+  min-width: 200px;
+}
+
+.word-box h3 {
+  color: #7bc8ff;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.word-box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.word-box li {
+  margin: 4px 0;
+}
+
+footer {
+  text-align: center;
+  font-size: 14px;
+  opacity: 0.5;
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
+
+<div class="main">
+  <header>
+    <h1>BILLIE EILISH <3</h1>
+  </header>
+
+  <div class="search-box">
+    <label for="syllabe">Syllabe :</label>
+    <input type="text" id="syllabe" placeholder="Ex: DE">
+
+    <label for="dico">Dictionnaire :</label>
+    <select id="dico">
+      <option value="FR.txt">FR</option>
+      <option value="MIXTE.txt">MIXTE</option>
+      <option value="EN.txt">EN</option>
+    </select>
+
+    <label for="contain">Contient :</label>
+    <input type="text" id="contain" placeholder="Lettre contenue">
+
+    <label for="start">Commence par :</label>
+    <input type="text" id="start" placeholder="Lettre initiale">
+  </div>
+
+  <div class="word-section">
+    <div class="word-box">
+      <h3>5 plus courts</h3>
+      <ul id="shortest"></ul>
+    </div>
+    <div class="word-box">
+      <h3>5 plus longs</h3>
+      <ul id="longest"></ul>
+    </div>
+    <div class="word-box">
+      <h3>5 aléatoires</h3>
+      <ul id="random"></ul>
+    </div>
+  </div>
+
+  <footer>
+    BILLIE JE T'AIME.
+  </footer>
+</div>
+
+<script>
+let dictionaryCache = null;
+
+// Charger le dictionnaire
+async function loadDictionary(file) {
+  const response = await fetch(file);
+  const text = await response.text();
+  return text.split(/\r?\n/).filter(w => w.length);
+}
+
+// Filtrer les mots
+function filterWords(words, syllabe, contain, start) {
+  let result = words.filter(w => w.includes(syllabe));
+
+  // Filtrer 'contient'
+  if (contain) {
+    const filtered = result.filter(w => w.includes(contain));
+    if (filtered.length) {
+      result = filtered;
+      document.getElementById('contain').value = '';
+    }
+  }
+
+  // Filtrer 'commence par'
+  if (start) {
+    const filteredStart = result.filter(w => w.startsWith(start));
+    if (filteredStart.length) {
+      result = filteredStart;
+      document.getElementById('start').value = '';
+    }
+  }
+
+  // Si aucun mot ne correspond après filtres, renvoyer mots contenant juste la syllabe
+  if (result.length === 0) {
+    result = words.filter(w => w.includes(syllabe));
+  }
+
+  return result;
+}
+
+// Sélectionner des mots aléatoires
+function getRandomWords(words, count) {
+  const shuffled = [...words].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
+}
+
+// Afficher mots
+function displayWords(id, words) {
+  const ul = document.getElementById(id);
+  ul.innerHTML = '';
+  words.forEach(w => {
+    const li = document.createElement('li');
+    li.textContent = w;
+    ul.appendChild(li);
+  });
+}
+
+// Générer les mots
+async function generateWords() {
+  const syllabe = document.getElementById('syllabe').value.toUpperCase();
+  const dico = document.getElementById('dico').value;
+  const contain = document.getElementById('contain').value.toUpperCase();
+  const start = document.getElementById('start').value.toUpperCase();
+
+  if (syllabe.length < 2) {
+    displayWords('shortest', []);
+    displayWords('longest', []);
+    displayWords('random', []);
+    return;
+  }
+
+  if (!dictionaryCache || dictionaryCache.file !== dico) {
+    let words = await loadDictionary(dico);
+    words = words.map(w => w.toUpperCase());
+    dictionaryCache = {file: dico, words};
+  }
+
+  const filtered = filterWords(dictionaryCache.words, syllabe, contain, start);
+
+  const shortest = filtered.slice().sort((a,b)=>a.length-b.length).slice(0,5);
+  const longest = filtered.slice().sort((a,b)=>b.length-a.length).slice(0,5);
+  const random = getRandomWords(filtered, 5);
+
+  displayWords('shortest', shortest);
+  displayWords('longest', longest);
+  displayWords('random', random);
+}
+
+// Détecter saisie automatique
+['syllabe','contain','start'].forEach(id => {
+  document.getElementById(id).addEventListener('input', generateWords);
+});
+document.getElementById('dico').addEventListener('change', generateWords);
+</script>
+
+</body>
+</html>
