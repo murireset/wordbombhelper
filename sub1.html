@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>WordBomb Helper – Mots à Une Syllabe</title>
-
 <style>
 * {
   box-sizing: border-box;
@@ -12,10 +11,52 @@
 }
 
 body {
+  margin: 0;
+  font-family: Arial, sans-serif;
   background: #0b0f14;
   color: #e6edf3;
-  font-family: Arial, sans-serif;
-  overflow-x: hidden;
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 220px;
+  background: #070b10;
+  border-right: 1px solid #111;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+}
+
+.sidebar h2 {
+  color: #7bc8ff;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #e6edf3;
+  padding: 12px 20px;
+  margin: 5px;
+  border-radius: 10px;
+  transition: 0.2s;
+  background: #13374a;
+  text-align: center;
+  font-weight: bold;
+}
+
+.sidebar a:hover {
+  background: #18506a;
+  transform: translateY(-2px);
+}
+
+.main {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 header {
@@ -23,6 +64,8 @@ header {
   padding: 24px;
   text-align: center;
   border-bottom: 1px solid #111;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
 header h1 {
@@ -32,12 +75,12 @@ header h1 {
 
 .container {
   max-width: 1200px;
-  margin: 50px auto;
+  margin: 0 auto;
   padding: 0 20px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  justify-content: center; /* centre les cartes sur la ligne */
+  justify-content: center;
 }
 
 .wordCard {
@@ -101,11 +144,22 @@ footer {
 </head>
 <body>
 
-<header>
-  <h1>SUB1</h1>
-</header>
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="grille.html">Grille</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="all.html">All</a>
+  <a href="json.html">JSON</a>
+  <a href="dictionnaire.html">Dictionnaires</a>
+</div>
 
-<div class="container">
+<div class="main">
+  <header>
+    <h1>SUB1</h1>
+  </header>
+
+  <div class="container">
 
  <div class="wordCard">
     <div class="wordTitle">MDRR</div>
@@ -457,13 +511,12 @@ footer {
   </div>
 </div>
 
+  </div>
 
-
+  <footer>
+    BILLIE LA REINE DE CE MONDE.
+  </footer>
 </div>
-
-<footer>
-  BILLIE LA REINE DE CE MONDE.
-</footer>
 
 </body>
 </html>
