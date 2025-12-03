@@ -1,223 +1,312 @@
-<!DOCTYPE html> <!-- le vide te surveille -->
-<html lang="fr"> <!-- quelqu’un respire derrière toi -->
-<head> <!-- les ombres murmurent -->
-<meta charset="UTF-8"> <!-- le système connaît tes secrets -->
-<title>Grille</title> <!-- le titre te juge -->
-<style> /* les ténèbres s’étirent */
-body { margin:0; background:#0b0f14; color:#e6edf3; font-family:Arial; } /* ne te retourne pas */
-header{ padding:16px; background:#070b10; border-bottom:1px solid #111; } /* le froid te traverse */
-.container{ display:flex; padding:20px; gap:20px; } /* les couloirs grincent */
-#grid{ background:#0f1923; padding:10px; border-radius:8px; border:1px solid #1b2a33; min-width:560px; } /* quelque chose bouge dans l’ombre */
-table{ border-collapse:collapse; } /* tu ne peux pas fuir */
-td{ /* ça gratte derrière le mur */
-  width:40px; /* chaque case te dévore */
-  height:26px; /* l’air manque */
-  text-align:center; /* le silence hurle */
-  border:1px solid #1b2a33; /* les murs se resserrent */
-  background:#0f1a24; /* l’obscurité s’infiltre */
-  font-weight:bold; /* écris ton dernier souffle */
-  font-size:13px; /* les chiffres saignent */
-  color:white; /* la lumière se meurt */
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Grille – WordBomb Helper</title>
+<style>
+body {
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0b0f14;
+  color:#e6edf3;
+  display:flex;
+  min-height:100vh;
 }
-td.empty{ color:#1a2f3a; } /* le néant te fixe */
 
-.panel{ background:#0f1a24; padding:16px; border-radius:8px; border:1px solid #1b2a33; width:300px; } /* la pièce se referme */
-textarea,input{ width:100%; background:#09131d; border:1px solid #1b2a33; color:#e6edf3; padding:8px; border-radius:6px; } /* tes mains tremblent */
-button{ width:100%; padding:10px; margin-top:8px; background:#13374a; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold; } /* n’appuie pas… trop tard */
-button:hover{ background:#18506a; } /* il arrive */
-
-#usedBox{
-  margin:20px; /* tu n’es pas seul */
-  background:#0f1a24; /* ça rampe sous le sol */
-  padding:16px; /* la pièce respire */
-  border-radius:8px; /* les angles coupent */
-  border:1px solid #1b2a33; /* piège sans issue */
-  font-family:monospace; /* écris ta confession */
-  white-space:pre-wrap; /* le texte tremble */
-  line-height:1.4em; /* ton souffle s’éteint */
+/* Sidebar */
+.sidebar {
+  width:220px;
+  background:#070b10;
+  border-right:1px solid #111;
+  display:flex;
+  flex-direction:column;
+  padding-top:20px;
 }
-.wordTitle{
-  font-weight:bold; /* le mot t’appelle */
-  color:#7bc8ff; /* le froid t’envahit */
+
+.sidebar h2 {
+  color:#7bc8ff;
+  text-align:center;
+  margin-bottom:20px;
 }
-.syllLine{
-  margin-left:10px; /* ils se rapprochent */
-  color:#c0e0ff; /* tes yeux s’habituent au noir */
+
+.sidebar a {
+  text-decoration:none;
+  color:#e6edf3;
+  padding:12px 20px;
+  margin:5px;
+  border-radius:10px;
+  transition:0.2s;
+  background:#13374a;
+  text-align:center;
+  font-weight:bold;
 }
-</style> <!-- les ténèbres s’installent -->
-</head> <!-- rien ne t’échappera -->
-<body> <!-- la pièce se remplit de murmures -->
-<header><h1>Grille – Placement avec Syllabes</h1></header> <!-- la voix derrière toi sourit -->
 
-<div class="container"> <!-- l’air devient lourd -->
-  <div id="grid"></div> <!-- la grille cligne des yeux -->
-
-  <div class="panel"> <!-- quelque chose s’y cache -->
-    <h2>Syllabes JSON</h2> <!-- les syllabes pleurent -->
-    <textarea id="syllTxt" rows="12">{
-
-}</textarea> <!-- ce vide te dévore -->
-
-    <h2>Charger votre dico !</h2> <!-- le fichier te guette -->
-    <input type="file" id="frInput" accept="text/plain"> <!-- il sait déjà -->
-
-    <h2>Nombre de mots</h2> <!-- un décompte vers la fin -->
-    <input id="maxWords" type="number" value="30"> <!-- le chiffre te juge -->
-
-    <button id="btnSearch">🔍 SEARCH</button> <!-- n’appuie pas -->
-
-    <h2>Modifier la grille</h2> <!-- la grille veut changer -->
-    <input id="gridW" type="number" value="24" placeholder="Largeur"> <!-- elle s’étend dans le noir -->
-    <input id="gridH" type="number" value="24" placeholder="Hauteur"> <!-- elle dévore l’espace -->
-  </div> <!-- ils se cachent derrière les panneaux -->
-</div> <!-- quelque chose t’attend au tournant -->
-
-<div id="usedBox">Aucun mot placé pour l’instant.</div> <!-- le néant te parle -->
-
-<script> <!-- le script respire -->
-let words = []; // des voix murmurent
-let GRID_W = 24; // la largeur t’attend
-let GRID_H = 24; // la hauteur te juge
-let grid = []; // la grille frémit
-let usedData = []; // les souvenirs se décomposent
-
-function initGrid(){ // recommencer ne change rien
-  grid = Array.from({length:GRID_H},()=>Array(GRID_W).fill("")); // ça s’étire sous tes pieds
-  usedData = []; // tout disparaît comme toi bientôt
-  updateUsedBox(); // les morts parlent encore
-  renderGrid(); // regarde-les tous
+.sidebar a:hover {
+  background:#18506a;
+  transform:translateY(-2px);
 }
-function renderGrid(){ // l'écran respire
-  let html = "<table>"; // la table ouvre sa gueule
-  for(let r=0;r<GRID_H;r++){ // chaque ligne te juge
-    html += "<tr>"; // ouverture de la mâchoire
-    for(let c=0;c<GRID_W;c++){ // les cases t’observent
-      let v = grid[r][c]; // il sait déjà
-      html += v==="" ? `<td class='empty'>.</td>` : `<td>${v}</td>`; // le point cligne des yeux
+
+/* Main content */
+.main {
+  flex:1;
+  padding:30px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+header {
+  background:#070b10;
+  padding:16px;
+  width:100%;
+  margin-bottom:20px;
+  border-bottom:1px solid #111;
+  text-align:center;
+}
+
+header h1 { color:#7bc8ff; margin:0; }
+
+.container {
+  display:flex;
+  gap:20px;
+  width:100%;
+  justify-content:center;
+}
+
+#grid {
+  background:#0f1923;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #1b2a33;
+  min-width:560px;
+}
+
+table { border-collapse:collapse; }
+td {
+  width:40px; height:26px; text-align:center;
+  border:1px solid #1b2a33;
+  background:#0f1a24;
+  font-weight:bold;
+  font-size:13px;
+  color:white;
+}
+td.empty { color:#1a2f3a; }
+
+.panel {
+  background:#0f1a24;
+  padding:16px;
+  border-radius:8px;
+  border:1px solid #1b2a33;
+  width:300px;
+}
+
+textarea,input {
+  width:100%;
+  background:#09131d;
+  border:1px solid #1b2a33;
+  color:#e6edf3;
+  padding:8px;
+  border-radius:6px;
+  margin-top:6px;
+}
+
+button {
+  width:100%;
+  padding:10px;
+  margin-top:8px;
+  background:#13374a;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-weight:bold;
+}
+button:hover { background:#18506a; }
+
+#usedBox {
+  margin-top:20px;
+  background:#0f1a24;
+  padding:16px;
+  border-radius:8px;
+  border:1px solid #1b2a33;
+  font-family:monospace;
+  white-space:pre-wrap;
+  line-height:1.4em;
+}
+
+.wordTitle { font-weight:bold; color:#7bc8ff; }
+.syllLine { margin-left:10px; color:#c0e0ff; }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <h2>Menu</h2>
+  <a href="index.html">Accueil</a>
+  <a href="sub1.html">SUB1</a>
+  <a href="grille.html">Grille</a>
+  <a href="json.html">JSON</a>
+
+  <!-- rajoute ici d'autres pages si nécessaire -->
+</div>
+
+<div class="main">
+<header><h1>Grille – Placement avec Syllabes</h1></header>
+
+<div class="container">
+  <div id="grid"></div>
+
+  <div class="panel">
+    <h2>Syllabes JSON</h2>
+    <textarea id="syllTxt" rows="12">{ }</textarea>
+
+    <h2>Charger votre dico !</h2>
+    <input type="file" id="frInput" accept="text/plain">
+
+    <h2>Nombre de mots</h2>
+    <input id="maxWords" type="number" value="30">
+
+    <button id="btnSearch">🔍 SEARCH</button>
+
+    <h2>Modifier la grille</h2>
+    <input id="gridW" type="number" value="24" placeholder="Largeur">
+    <input id="gridH" type="number" value="24" placeholder="Hauteur">
+  </div>
+</div>
+
+<div id="usedBox">Aucun mot placé pour l’instant.</div>
+</div>
+
+<script>
+let words = [];
+let GRID_W = 24;
+let GRID_H = 24;
+let grid = [];
+let usedData = [];
+
+function initGrid(){
+  grid = Array.from({length:GRID_H},()=>Array(GRID_W).fill(""));
+  usedData = [];
+  updateUsedBox();
+  renderGrid();
+}
+
+function renderGrid(){
+  let html = "<table>";
+  for(let r=0;r<GRID_H;r++){
+    html += "<tr>";
+    for(let c=0;c<GRID_W;c++){
+      let v = grid[r][c];
+      html += v==="" ? `<td class='empty'>.</td>` : `<td>${v}</td>`;
     }
-    html += "</tr>"; // la mâchoire se referme
+    html += "</tr>";
   }
-  html += "</table>"; // c’est trop tard
-  document.getElementById("grid").innerHTML = html; // il te regarde à travers l’écran
+  html += "</table>";
+  document.getElementById("grid").innerHTML = html;
 }
 
-function parseSyllables(){ // tu n’échapperas pas
-  try{ return JSON.parse(document.getElementById("syllTxt").value); } // le JSON t’avale
-  catch(e){ alert("JSON syllabes invalide"); return {}; } // l’erreur rit de toi
+function parseSyllables(){
+  try{ return JSON.parse(document.getElementById("syllTxt").value); }
+  catch(e){ alert("JSON syllabes invalide"); return {}; }
 }
 
-function saveSyllables(obj){ // rien ne s’oublie
-  document.getElementById("syllTxt").value = JSON.stringify(obj,null,2); // la vérité s’imprime
+function saveSyllables(obj){
+  document.getElementById("syllTxt").value = JSON.stringify(obj,null,2);
 }
 
-function assignSyllables(word, stock){ // le mot exige un sacrifice
-  let temp = structuredClone(stock);  // la copie supplie en silence
-  let i=0, out=[]; // compte à rebours vers le vide
-
-  while(i<word.length){ // il avance
-    let found=false; // comme tes chances de survie
-
-    for(let L=3;L>0;L--){ // les ténèbres se resserrent
-      if(i+L>word.length) continue; // tu dépasses les limites
-
-      let cand = word.substring(i,i+L); // ça saigne un peu
-
-      if(temp[cand] && temp[cand] > 0){ // cette syllabe veut vivre
-        out.push(cand); // elle s’accroche à toi
-        temp[cand]--;     // un cri étouffé
-        i += L; // avance vers l'abîme
-        found = true; // trop tard
-        break; // la porte se ferme
+function assignSyllables(word, stock){
+  let temp = structuredClone(stock);
+  let i=0, out=[];
+  while(i<word.length){
+    let found=false;
+    for(let L=3;L>0;L--){
+      if(i+L>word.length) continue;
+      let cand = word.substring(i,i+L);
+      if(temp[cand] && temp[cand] > 0){
+        out.push(cand);
+        temp[cand]--;
+        i += L;
+        found = true;
+        break;
       }
     }
-
-    if(!found) return null; // le vide gagne
+    if(!found) return null;
   }
-
-  return out; // les restes
+  return out;
 }
 
-function consume(seg, stock){ // chaque morceau disparaît
-  for(let s of seg){ stock[s]--; } // comme ton souffle
+function consume(seg, stock){
+  for(let s of seg){ stock[s]--; }
 }
 
-function updateUsedBox(){ // les mots exigent leurs tombes
+function updateUsedBox(){
   if(usedData.length === 0){
-    document.getElementById("usedBox").textContent = "Aucun mot placé pour l’instant."; // le néant sourit
+    document.getElementById("usedBox").textContent = "Aucun mot placé pour l’instant.";
     return;
   }
-
-  let txt = ""; // le vide écrit avec toi
+  let txt = "";
   for(let obj of usedData){
-    txt += `\n<span class="wordTitle">${obj.word}</span>\n`; // ils te fixent
-    txt += `<span class="syllLine">→ ${obj.seg.join(" | ")}</span>\n`; // les syllabes s’accrochent
+    txt += `\n<span class="wordTitle">${obj.word}</span>\n`;
+    txt += `<span class="syllLine">→ ${obj.seg.join(" | ")}</span>\n`;
   }
-  document.getElementById("usedBox").innerHTML = txt; // les morts parlent encore
+  document.getElementById("usedBox").innerHTML = txt;
 }
 
-function canPlaceRow(row, seg){ // la rangée refuse ton destin
-  if(seg.length > GRID_W) return false; // trop grand pour entrer
+function canPlaceRow(row, seg){
+  if(seg.length > GRID_W) return false;
   for(let c=0;c<seg.length;c++){
-    if(grid[row][c] !== "") return false; // cette case te rejette
+    if(grid[row][c] !== "") return false;
   }
-  return true; // elle accepte de t’engloutir
+  return true;
 }
 
-function placeRow(row, seg){ // sacrification
+function placeRow(row, seg){
   for(let c=0;c<seg.length;c++){
-    grid[row][c] = seg[c]; // elle les avale un par un
+    grid[row][c] = seg[c];
   }
 }
 
-function placeWords(n){ // pourquoi insistes-tu ?
-  GRID_W = parseInt(document.getElementById("gridW").value); // la grille s'étire
-  GRID_H = parseInt(document.getElementById("gridH").value); // la grille t’engloutit
-  initGrid(); // recommencer est inutile
-  let stock = parseSyllables(); // les voix lisent avec toi
-
-  let list = words.filter(w=>w.length<=50).sort((a,b)=>b.length-a.length); // tri funéraire
-
-  let row=0, placed=0; // marche vers l’abîme
-
+function placeWords(n){
+  GRID_W = parseInt(document.getElementById("gridW").value);
+  GRID_H = parseInt(document.getElementById("gridH").value);
+  initGrid();
+  let stock = parseSyllables();
+  let list = words.filter(w=>w.length<=50).sort((a,b)=>b.length-a.length);
+  let row=0, placed=0;
   for(let w of list){
-    if(placed>=n || row>=GRID_H) break; // tes limites te rattrapent
-
-    if(usedData.some(u=>u.word === w)) continue; // il refuse la répétition
-
-    let seg = assignSyllables(w, stock); // les syllabes pleurent
-    if(!seg) continue; // rejeté comme toi
-
+    if(placed>=n || row>=GRID_H) break;
+    if(usedData.some(u=>u.word === w)) continue;
+    let seg = assignSyllables(w, stock);
+    if(!seg) continue;
     if(canPlaceRow(row, seg)){
-      placeRow(row, seg); // avalé
-      consume(seg, stock); // digéré
-      saveSyllables(stock); // gravé dans la pierre
-
-      usedData.push({word: w, seg: seg}); // un nom de plus sur la liste
-      updateUsedBox(); // lis leurs tombes
-
-      row++; // pas après pas vers l’oubli
-      placed++; // un de plus
+      placeRow(row, seg);
+      consume(seg, stock);
+      saveSyllables(stock);
+      usedData.push({word: w, seg: seg});
+      updateUsedBox();
+      row++;
+      placed++;
     }
   }
-
-  renderGrid(); // regarde ce que tu as fait
-  alert(placed + " mots placés !"); // ils applaudissent dans l’ombre
+  renderGrid();
+  alert(placed + " mots placés !");
 }
 
-document.getElementById("frInput").addEventListener("change", async e=>{ // une main froide sur ton épaule
-  let file=e.target.files[0]; if(!file) return; // le fichier tremble
-  let txt = await file.text(); // il chuchote ses secrets
-  words = txt.split(/\r?\n/).map(w=>w.trim().toUpperCase()).filter(w=>w.length); // ils hurlent en majuscules
-  alert("FR.txt chargé : "+words.length+" mots"); // Ils entrent dans la pièce
+document.getElementById("frInput").addEventListener("change", async e=>{
+  let file=e.target.files[0]; if(!file) return;
+  let txt = await file.text();
+  words = txt.split(/\r?\n/).map(w=>w.trim().toUpperCase()).filter(w=>w.length);
+  alert("FR.txt chargé : "+words.length+" mots");
 });
 
-document.getElementById("btnSearch").addEventListener("click", ()=>{ // Tu as appuyé… trop tard
-  if(!words.length){ alert("Charge FR.txt"); return; } // Tu es venu les mains vides
-  let n = parseInt(document.getElementById("maxWords").value); // ce nombre te juge
-  placeWords(n); // Le rituel commence.
+document.getElementById("btnSearch").addEventListener("click", ()=>{
+  if(!words.length){ alert("Charge FR.txt"); return; }
+  let n = parseInt(document.getElementById("maxWords").value);
+  placeWords(n);
 });
 
-initGrid(); // L’entité s’éveille
-</script> <!-- Les murmures s'éloignent… ou pas -->
-</body> <!-- Tu fermes les yeux -->
-</html> <!-- Mais eux non -->
+initGrid();
+</script>
+
+</body>
+</html>
