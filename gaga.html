@@ -46,7 +46,7 @@ body {
   transform: translateY(-2px);
 }
 
-/* Partie principale */
+/* Main content */
 .main {
   flex: 1;
   padding: 40px;
@@ -69,31 +69,39 @@ header h1 {
   color: #7bc8ff;
 }
 
-/* Boîte de recherche */
+/* Search box */
 .search-box {
   background: #13374a;
-  padding: 20px;
+  padding: 25px;
   border-radius: 12px;
   width: 100%;
-  max-width: 500px;
+  max-width: 550px;
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
+  box-shadow: 0 0 15px #000a;
 }
 
 .search-box label {
   margin: 5px 0;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .search-box input, .search-box select {
-  padding: 8px;
-  margin-bottom: 10px;
+  padding: 10px;
+  margin-bottom: 15px;
   border-radius: 8px;
   border: none;
+  font-size: 16px;
 }
 
-/* Résultats */
+.search-box input:focus, .search-box select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #7bc8ff;
+}
+
+/* Word section */
 .word-section {
   width: 100%;
   display: flex;
@@ -103,25 +111,43 @@ header h1 {
 
 .word-box {
   background: #13374a;
-  padding: 15px;
+  padding: 20px;
   border-radius: 12px;
   margin: 10px;
   min-width: 200px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 0 10px #0008;
 }
 
 .word-box h3 {
   color: #7bc8ff;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   text-align: center;
 }
 
 .word-box ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .word-box li {
-  margin: 4px 0;
+  margin: 5px 0;
+  padding: 5px 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.word-box li:hover {
+  background-color: #18506a;
+  cursor: default;
+}
+
+/* Highlight syllable */
+.highlight {
+  color: #ffd700;
+  font-weight: bold;
 }
 
 footer {
@@ -155,9 +181,9 @@ footer {
 
     <label for="dico">Dictionnaire :</label>
     <select id="dico">
-      <option value="FR.txt">FR</option>
-      <option value="MIXTE.txt">MIXTE</option>
-      <option value="EN.txt">EN</option>
+      <option value="FR">FR</option>
+      <option value="MIXTE">MIXTE</option>
+      <option value="EN">EN</option>
     </select>
 
     <label for="contain">Contient :</label>
@@ -188,38 +214,28 @@ footer {
 </div>
 
 <script>
-let dictionaryCache = null;
+// Dictionnaires intégrés directement pour éviter CORS
+const DICTIONNAIRES = {
+  FR: ["DE", "DEMIE", "DENTS", "DEUX", "DEMAIN", "DEVOIR", "DELICE", "DEVINETTE", "DÉRIVE"],
+  MIXTE: ["DE", "DEMO", "DEVICE", "DEFINE", "DETECT", "DELIVER", "DEMOCRACY", "DÉJÀ"],
+  EN: ["DE", "DEAL", "DEEP", "DEFINE", "DETECT", "DEVELOP", "DELIVER", "DESIGN"]
+};
 
-// Charger le dictionnaire
-async function loadDictionary(file) {
-  const response = await fetch(file);
-  const text = await response.text();
-  return text.split(/\r?\n/).filter(w => w.length);
-}
-
-// Filtrer les mots
+// Filtrer les mots selon syllabe, contient, commence par
 function filterWords(words, syllabe, contain, start) {
   let result = words.filter(w => w.includes(syllabe));
 
-  // Filtrer 'contient'
   if (contain) {
     const filtered = result.filter(w => w.includes(contain));
-    if (filtered.length) {
-      result = filtered;
-      document.getElementById('contain').value = '';
-    }
+    if (filtered.length) result = filtered;
   }
 
-  // Filtrer 'commence par'
   if (start) {
     const filteredStart = result.filter(w => w.startsWith(start));
-    if (filteredStart.length) {
-      result = filteredStart;
-      document.getElementById('start').value = '';
-    }
+    if (filteredStart.length) result = filteredStart;
   }
 
-  // Si aucun mot ne correspond après filtres, renvoyer mots contenant juste la syllabe
+  // Si aucun mot ne correspond aux lettres, renvoyer quand même mots contenant la syllabe
   if (result.length === 0) {
     result = words.filter(w => w.includes(syllabe));
   }
@@ -227,60 +243,56 @@ function filterWords(words, syllabe, contain, start) {
   return result;
 }
 
-// Sélectionner des mots aléatoires
+// Obtenir mots aléatoires
 function getRandomWords(words, count) {
   const shuffled = [...words].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
 
-// Afficher mots
-function displayWords(id, words) {
+// Affichage avec surlignage de la syllabe
+function displayWords(id, words, syllabe) {
   const ul = document.getElementById(id);
   ul.innerHTML = '';
+  const regex = new RegExp(`(${syllabe})`, 'gi');
   words.forEach(w => {
     const li = document.createElement('li');
-    li.textContent = w;
+    li.innerHTML = w.replace(regex, '<span class="highlight">$1</span>');
     ul.appendChild(li);
   });
 }
 
-// Générer les mots
-async function generateWords() {
+// Générer mots automatiquement
+function generateWords() {
   const syllabe = document.getElementById('syllabe').value.toUpperCase();
   const dico = document.getElementById('dico').value;
   const contain = document.getElementById('contain').value.toUpperCase();
   const start = document.getElementById('start').value.toUpperCase();
 
   if (syllabe.length < 2) {
-    displayWords('shortest', []);
-    displayWords('longest', []);
-    displayWords('random', []);
+    displayWords('shortest', [], '');
+    displayWords('longest', [], '');
+    displayWords('random', [], '');
     return;
   }
 
-  if (!dictionaryCache || dictionaryCache.file !== dico) {
-    let words = await loadDictionary(dico);
-    words = words.map(w => w.toUpperCase());
-    dictionaryCache = {file: dico, words};
-  }
-
-  const filtered = filterWords(dictionaryCache.words, syllabe, contain, start);
+  const words = DICTIONNAIRES[dico].map(w => w.toUpperCase());
+  const filtered = filterWords(words, syllabe, contain, start);
 
   const shortest = filtered.slice().sort((a,b)=>a.length-b.length).slice(0,5);
   const longest = filtered.slice().sort((a,b)=>b.length-a.length).slice(0,5);
   const random = getRandomWords(filtered, 5);
 
-  displayWords('shortest', shortest);
-  displayWords('longest', longest);
-  displayWords('random', random);
+  displayWords('shortest', shortest, syllabe);
+  displayWords('longest', longest, syllabe);
+  displayWords('random', random, syllabe);
 }
 
-// Détecter saisie automatique
+// Événements automatiques
 ['syllabe','contain','start'].forEach(id => {
   document.getElementById(id).addEventListener('input', generateWords);
 });
 document.getElementById('dico').addEventListener('change', generateWords);
-</script>
 
+</script>
 </body>
 </html>
