@@ -35,7 +35,9 @@ footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
   <a href="sub1.html">SUB1</a>
   <a href="all.html">All</a>
   <a href="json.html">JSON</a>
+  <a href="helper.html">Helper</a>
   <a href="dictionnaire.html">Dictionnaires</a>
+  <a href="kitty.html">Kitty.</a>
 </div>
 
 <div class="main">
@@ -58,24 +60,24 @@ footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
 </div>
 
 <script>
-let wordsMemory = []; // mots chargés depuis le txt
-let displayedWords = []; // mots actuellement affichés
+let wordsMemory = []; 
+let displayedWords = []; 
 
-// Lire le fichier txt
+
 document.getElementById('fileInput').addEventListener('change', function(e){
   const file = e.target.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = function(evt){
     const text = evt.target.result;
-    wordsMemory = text.split(/\r?\n/).filter(w=>w.trim().length); // stocke tous les mots
+    wordsMemory = text.split(/\r?\n/).filter(w=>w.trim().length);
     displayedWords = [...wordsMemory];
     updateDisplay();
   };
   reader.readAsText(file);
 });
 
-// Mettre à jour l'affichage selon la syllabe
+
 document.getElementById('syllabe').addEventListener('input', function(){
   updateDisplay();
 });
@@ -83,14 +85,14 @@ document.getElementById('syllabe').addEventListener('input', function(){
 function updateDisplay(){
   const syllabe = document.getElementById('syllabe').value.toUpperCase();
   let filtered = displayedWords.filter(w=>w.toUpperCase().includes(syllabe));
-  filtered = filtered.slice(0,5); // 5 mots max
+  filtered = filtered.slice(0,5); 
   const ul = document.getElementById('wordResults');
   ul.innerHTML = '';
   filtered.forEach(word=>{
     const li = document.createElement('li');
     li.innerHTML = word.replace(new RegExp(`(${syllabe})`,'gi'), '<span class="highlight">$1</span>');
     li.addEventListener('click', ()=>{
-      // supprimer le mot du tableau des mots restants
+     
       displayedWords = displayedWords.filter(w=>w!==word);
       updateDisplay();
     });
@@ -98,7 +100,6 @@ function updateDisplay(){
   });
 }
 
-// Copier les mots restants
 document.getElementById('copyBtn').addEventListener('click', function(){
   const text = displayedWords.join('\n');
   navigator.clipboard.writeText(text).then(()=>{
@@ -109,3 +110,4 @@ document.getElementById('copyBtn').addEventListener('click', function(){
 
 </body>
 </html>
+
