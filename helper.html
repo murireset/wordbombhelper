@@ -37,6 +37,7 @@ footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
   <a href="json.html">JSON</a>
   <a href="helper.html">Helper</a>
   <a href="dictionnaire.html">Dictionnaires</a>
+  <a href="kitty.html">Kitty.</a>
 </div>
 
 <div class="main">
@@ -85,7 +86,7 @@ footer { text-align:center; font-size:14px; opacity:0.5; margin-top:40px; }
 <script>
 let dictionaryCache = {file: '', words: []};
 
-// Charger le dictionnaire depuis le site
+
 async function loadDictionary(file) {
   if (dictionaryCache.file === file) return dictionaryCache.words;
   const response = await fetch(file);
@@ -95,7 +96,7 @@ async function loadDictionary(file) {
   return words;
 }
 
-// Filtrer les mots
+
 function filterWords(words, syllabe, contain, start) {
   let result = words.filter(w => w.includes(syllabe));
 
@@ -109,19 +110,19 @@ function filterWords(words, syllabe, contain, start) {
     if (filteredStart.length) result = filteredStart;
   }
 
-  // Si aucun mot ne correspond, on retourne quand même mots contenant la syllabe
+
   if (result.length === 0) result = words.filter(w => w.includes(syllabe));
 
   return result;
 }
 
-// Obtenir mots aléatoires
+
 function getRandomWords(words, count) {
   const shuffled = [...words].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
 
-// Affichage avec surlignage
+
 function displayWords(id, words, syllabe) {
   const ul = document.getElementById(id);
   ul.innerHTML = '';
@@ -133,7 +134,6 @@ function displayWords(id, words, syllabe) {
   });
 }
 
-// Générer automatiquement
 async function generateWords() {
   const syllabe = document.getElementById('syllabe').value.toUpperCase();
   const file = document.getElementById('dico').value;
@@ -159,7 +159,7 @@ async function generateWords() {
   displayWords('random', random, syllabe);
 }
 
-// Détecter la saisie automatique
+
 ['syllabe','contain','start'].forEach(id => {
   document.getElementById(id).addEventListener('input', generateWords);
 });
@@ -168,4 +168,5 @@ document.getElementById('dico').addEventListener('change', generateWords);
 </script>
 </body>
 </html>
+
 
